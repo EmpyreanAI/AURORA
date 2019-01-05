@@ -8,8 +8,8 @@ class Plotter(object):
 
     def plot_one(self, data, buy, sell):
         plot.plot(range(len(data)), data, linewidth=0.5, color='blue')
-        self.plot_buy_marks(buy)
-        self.plot_sell_marks(sell)
+        self._plot_buy_marks(buy)
+        self._plot_sell_marks(sell)
         plot.show()
 
     @classmethod

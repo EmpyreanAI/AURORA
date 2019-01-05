@@ -11,18 +11,20 @@ from agents.random import RandomAgent
 from simulator.plotter import Plotter
 from simulator.inputdata import InputData
 
-DEFAULT_STATE_SIZE = 10
+DEFAULT_WINDOW_SIZE = 10
 DEFAULT_START_YEAR = 1993
 DEFAULT_END_YEAR = 2018
 DEFAULT_AGENT = 'random'
 DEFAULT_STOCK = 'VALE3'
-DEFAULT_ACTIONS = ['buy', 'sell', 'wait']
+DEFAULT_ACTIONS = 'all'
+
+# ['buy', 'sell', 'wait']
 
 
 class Simulator(object):
 
     def __init__(self,
-                 window_size=DEFAULT_STATE_SIZE,
+                 window_size=DEFAULT_WINDOW_SIZE,
                  actions=DEFAULT_ACTIONS,
                  stock=DEFAULT_STOCK,
                  agent=DEFAULT_AGENT,
@@ -32,7 +34,7 @@ class Simulator(object):
         self.window_size = window_size
         self.stock = stock
         self.sim_profit = 0
-        self.actions = actions
+        self.actions = self._select_actions(actions)
         self.agent = self._register_agent(agent)
         self.data = self._get_data(start_year, end_year)
         self.data_len = len(self.data)-1
@@ -46,9 +48,19 @@ class Simulator(object):
         data = data.tolist()
         return data
 
+    def _select_actions(self, action):
+        if action == 'all':
+            return ['buy', 'sell', 'wait']
+        elif action == 'nowait':
+            return ['buy', 'sell']
+        else:
+            raise ValueError("Action must be 'all' or 'nowait'.")
+
     def _register_agent(self, type):
         if type == 'random':
             return RandomAgent(self.actions)
+        else:
+            raise ValueError("Agent must be 'random'.")
 
     def _execute_buy(self, time):
         self.agent.sub_cash(self.data[time])
