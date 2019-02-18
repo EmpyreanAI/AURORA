@@ -4,7 +4,7 @@ import matplotlib.pyplot as plot
 class Plotter(object):
 
     def __init__(self):
-        print("Ploter Initted")
+        pass
 
     def plot_one(self, data, buy, sell):
         plot.plot(range(len(data)), data, linewidth=0.5, color='blue')
