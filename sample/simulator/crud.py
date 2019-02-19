@@ -1,4 +1,6 @@
 import pymongo
+import pprint
+import datetime
 
 class CRUD(object):
 
@@ -9,13 +11,22 @@ class CRUD(object):
 
         self.db = self.client.StockMarket
 
-    def get_market(self):
-        markets = self.db.Market.find({}).sort('_id')
-        for market in markets:
-            print(market['_id'])
+    def get_markets(self):
+        d = datetime.datetime(1998, 3, 13)
+        markets = self.db.Market.find({'_id': {'$gte': d}}).sort('_id')
+        return markets
 
+    def get_stock(self, date, stock):
+        print(type(date))
+        stock = self.db.Market.find_one({'_id': date}) #'stock': {'CODNEG': stock}
+        for stock in stock['stocks']:
+            print(stock['CODNEG'])
+
+        return stock
 
 if __name__ == '__main__':
 
     crud = CRUD()
-    crud.get_market()
+    markets = crud.get_markets()
+    market = markets[0]
+    date = crud.get_stock(market['_id'], 'VAL 3')
