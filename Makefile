@@ -1,7 +1,7 @@
 init:
 	pip3 install -r requirements.txt --user
-	sudo easy_install nose
+	pip3 install nose2
 test:
-	python3 -m "nose"
+	nose2 -v -C --coverage ./sample tests
 
 .PHONY: init test

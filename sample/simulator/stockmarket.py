@@ -7,9 +7,10 @@ OWOWOW
 """
 import math
 import numpy as np
+from .plotter import Plotter
 from agents.random import RandomAgent
-from simulator.plotter import Plotter
-from simulator.inputdata import InputData
+# from .inputdata import InputData
+
 
 
 class StockMarket(object):

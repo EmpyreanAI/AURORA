@@ -1,5 +1,5 @@
 import random
-from insiders.base import *
+from .base import *
 
 class RandomInsider(BaseInsider):
 

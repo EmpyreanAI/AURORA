@@ -1,6 +1,6 @@
 
 from argparse import ArgumentParser
-from simulator.stockmarket import StockMarket
+from .stockmarket import StockMarket
 from agents.random import RandomAgent
 
 DEFAULT_WINDOW_SIZE = 10

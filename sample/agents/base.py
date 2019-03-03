@@ -6,11 +6,11 @@ class BaseAgent(object):
         self.cash = 0
         self.profit = 0
         self.actions = self._select_actions(actions)
-        id = 0
+        insider_id = 0
         self.insiders = []
         for stock in stocks:
             self.insiders.append(self._register_insider(id, "random", stock))
-            id += 1
+            insider_id += 1
 
     def zero_cash(self):
         self.cash = 0

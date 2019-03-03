@@ -1,4 +1,3 @@
-
 import random
 from agents.base import BaseAgent
 
