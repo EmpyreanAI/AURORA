@@ -1,5 +1,6 @@
 # import pprint
 import pymongo
+from pymongo.errors import BulkWriteError
 import pandas
 import glob
 from datetime import datetime
@@ -247,18 +248,19 @@ def create_market(path, stock_market):
             market.insert_one(new_market)
 
 def create_stocks_db():
-    client = pymongo.MongoClient('127.0.0.1', 27017,
-                                 username="Skalwalker",
-                                 password="reka09")
+    client = pymongo.MongoClient('mongo')
 
     stock_market = client.StockMarket
 
-    data_path = '../../data/*.csv'
-    create_market_type(stock_market)
-    create_bdi(stock_market)
-    create_indopc(stock_market)
-    create_especi(stock_market)
-    create_market(data_path, stock_market)
+    try:
+      data_path = 'data/ibovespa_csv/*.csv'
+      create_market_type(stock_market)
+      create_bdi(stock_market)
+      create_indopc(stock_market)
+      create_especi(stock_market)
+      create_market(data_path, stock_market)
+    except BulkWriteError as exc:
+      print(exc.details)
 
 
 if __name__ == '__main__':
