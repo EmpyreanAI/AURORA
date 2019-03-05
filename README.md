@@ -1,4 +1,4 @@
-# IbovespaWolf
+# BovespaWolf
 
 Este repositório contém os códigos da equipe SEKMANDA, e tem como objetivo ser usada na competição da SEK na LARC 2018. O código foi desenvolvido para o Kit Lego Mindstorm NXT e utiliza como base a linguagem de programação NXC.
 
