@@ -17,7 +17,7 @@ class BaseInsider(object):
     def get_stocks(self):
         return self.stock_wallet
 
-    def get_name(self):
+    def get_stock_name(self):
         return self.stock
 
     def wallet_size(self):

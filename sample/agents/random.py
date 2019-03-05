@@ -19,23 +19,29 @@ class RandomAgent(BaseAgent):
         # if act is 'sell' or 'buy':
         #     self.log_cash()
 
-    def act(self, action_price):
+    def act(self, day, crud):
         infos = self.request_notifications()
         selected_actions = []
         temp_cash = self.cash
-        for stock, info in infos:
-            actions = self.actions[:]
-            if temp_cash < action_price:
-                actions.remove('buy')
-            if stock.wallet_size() == 0:
-                actions.remove('sell')
-            actions_size = len(actions)
-            index = random.randrange(actions_size)
-            action = actions[index]
-            if action == 'buy':
-                temp_cash -= action_price
-            self.log_action("{}: {}".format(stock.get_name(), action))
-            selected_actions.append((stock, action))
+        for insider, info in infos:
+            stock_name = insider.get_stock_name()
+            stock = crud._get_stock(day, stock_name)
+            if stock != None:
+                stock_price = stock['PREULT']
+                actions = self.actions[:]
+                if temp_cash < stock_price:
+                    actions.remove('buy')
+                if insider.wallet_size() == 0:
+                    actions.remove('sell')
+                actions_size = len(actions)
+                index = random.randrange(actions_size)
+                action = actions[index]
+                if action == 'buy':
+                    temp_cash -= stock_price
+            else:
+                action = 'wait'
+            self.log_action("{}: {}".format(stock_name, action))
+            selected_actions.append((insider, stock, action))
         return selected_actions
 
     @classmethod

@@ -4,9 +4,9 @@ from .stockmarket import StockMarket
 from agents.random import RandomAgent
 
 DEFAULT_WINDOW_SIZE = 10
-DEFAULT_START_YEAR = 2017
+DEFAULT_START_YEAR = 2001
 DEFAULT_END_YEAR = 2018
-DEFAULT_STOCK = ['VALE3', 'VALE3', 'VALE3']
+DEFAULT_STOCK = ['VALE3', 'PETR3', 'ALPA3']
 
 DEFAULT_AGENT = 'random'
 DEFAULT_ACTIONS = 'all'

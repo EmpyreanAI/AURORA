@@ -7,11 +7,10 @@ OWOWOW
 """
 import math
 import numpy as np
+
+from .crud import CRUD
 from .plotter import Plotter
 from agents.random import RandomAgent
-# from .inputdata import InputData
-
-
 
 class StockMarket(object):
 
@@ -19,28 +18,26 @@ class StockMarket(object):
         self._log("Initialized")
         self.window_size = window_size
         self.agent = agent
+        self.crud = CRUD()
         self.data = self._get_data(start_year, end_year)
-        self.data_len = len(self.data)-1
         self.plotter = Plotter()
 
+
     def _get_data(self, start_year, end_year):
-        data = InputData(start_year, end_year)
-        data_frame = data.stock_df("VALE3")
-        data = np.array(data_frame[['PREULT']])
-        data = np.reshape(data, len(data))
-        data = data.tolist()
+        data = self.crud._get_markets(start_year, end_year)
         return data
 
-    def _execute_buy(self, time, stock):
-        self.agent.sub_cash(self.data[time])
-        stock.stock_wallet.append(self.data[time])
-        self._log("Stock being bought at {0:.2f}".format(self.data[time]))
+    def _execute_buy(self, insider, stock):
+        self.agent.sub_cash(stock['PREULT'])
+        insider.stock_wallet.append(stock)
+        self._log("Stock being bought at {0:.2f}".format(stock['PREULT']))
 
-    def _execute_sell(self, time, stock):
-        bought_price = stock.stock_wallet.pop(0)
-        self.agent.add_profit(self.data[time] - bought_price)
-        self.agent.add_cash(self.data[time])
-        self._log("Stock being sold at {0:.2f}".format(self.data[time]))
+    def _execute_sell(self, insider, stock):
+        bought_price = insider.stock_wallet.pop(0)
+        bought_price = bought_price['PREULT']
+        self.agent.add_profit(stock['PREULT'] - bought_price)
+        self.agent.add_cash(stock['PREULT'])
+        self._log("Stock being sold at {0:.2f}".format(stock['PREULT']))
 
     def _get_state(self, time):
         window = time - self.window_size + 1
@@ -61,18 +58,18 @@ class StockMarket(object):
         self.agent._log_cash()
         bought = []
         sold = []
-        for time in range(self.data_len):
-            state = self._get_state(time)
+        for day in self.data:
+            # state = self._get_state(time)
             agent_money = self.agent.get_cash()
-            actions = self.agent.act(self.data[time])
+            actions = self.agent.act(day['_id'], self.crud)
 
-            for stock, action in actions:
+            for insider, stock, action in actions:
                 if action == 'buy':
-                    self._execute_buy(time, stock)
-                    bought.append([self.data[time], time])
+                    self._execute_buy(insider, stock)
+                    bought.append((day['_id'], stock['PREULT']))
                 elif action == 'sell':
-                    self._execute_sell(time, stock)
-                    sold.append([self.data[time], time])
+                    self._execute_sell(insider, stock)
+                    sold.append((day['_id'], stock['PREULT']))
             reward = math.log((self.agent.get_cash()/agent_money), 10)
 
         self._log("Simulation Completed")

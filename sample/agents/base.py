@@ -9,7 +9,7 @@ class BaseAgent(object):
         insider_id = 0
         self.insiders = []
         for stock in stocks:
-            self.insiders.append(self._register_insider(id, "random", stock))
+            self.insiders.append(self._register_insider(insider_id, "random", stock))
             insider_id += 1
 
     def zero_cash(self):
