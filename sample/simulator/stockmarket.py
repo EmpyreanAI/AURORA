@@ -28,15 +28,15 @@ class StockMarket(object):
         return data
 
     def _execute_buy(self, insider, stock):
-        self.agent.sub_cash(stock['PREULT'])
+        self.agent.cash_sub(stock['PREULT'])
         insider.stock_wallet.append(stock)
         self._log("Stock being bought at {0:.2f}".format(stock['PREULT']))
 
     def _execute_sell(self, insider, stock):
         bought_price = insider.stock_wallet.pop(0)
         bought_price = bought_price['PREULT']
-        self.agent.add_profit(stock['PREULT'] - bought_price)
-        self.agent.add_cash(stock['PREULT'])
+        self.agent.profit_add(stock['PREULT'] - bought_price)
+        self.agent.cash_add(stock['PREULT'])
         self._log("Stock being sold at {0:.2f}".format(stock['PREULT']))
 
     def _get_state(self, time):
@@ -54,13 +54,13 @@ class StockMarket(object):
 
     def run(self):
         self._log("Running")
-        self.agent.add_cash(1000.00)
-        self.agent._log_cash()
+        self.agent.cash_add(1000.00)
+        self.agent.log_cash()
         bought = []
         sold = []
         for day in self.data:
             # state = self._get_state(time)
-            agent_money = self.agent.get_cash()
+            agent_money = self.agent.cash
             actions = self.agent.act(day['_id'], self.crud)
 
             for insider, stock, action in actions:
@@ -70,7 +70,7 @@ class StockMarket(object):
                 elif action == 'sell':
                     self._execute_sell(insider, stock)
                     sold.append((day['_id'], stock['PREULT']))
-            reward = math.log((self.agent.get_cash()/agent_money), 10)
+            reward = math.log((self.agent.cash/agent_money), 10)
 
         self._log("Simulation Completed")
         self._log("Simulation profit: {0:.2f}".format(self.agent.profit))

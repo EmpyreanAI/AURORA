@@ -3,14 +3,14 @@ from agents.base import BaseAgent
 
 class RandomAgent(BaseAgent):
 
-    def __init__(self, actions, stocks):
+    def __init__(self, actions, stocks, insider_type):
         self._log("Initialized")
-        super(RandomAgent, self).__init__(actions, stocks)
-        self._log("Cash: {0:.2f}".format(self.get_cash()))
-        self._log("Profit: {0:.2f}".format(self.get_profit()))
+        super(RandomAgent, self).__init__(actions, stocks, insider_type)
+        self._log("Cash: {0:.2f}".format(self.cash))
+        self._log("Profit: {0:.2f}".format(self.profit))
 
-    def _log_cash(self):
-        self._log("Cash: {0:.2f}".format(self.get_cash()))
+    def log_cash(self):
+        self._log("Cash: {0:.2f}".format(self.cash))
 
     def log_action(self, act):
         act = act.capitalize()

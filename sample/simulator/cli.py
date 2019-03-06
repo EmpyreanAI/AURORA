@@ -10,6 +10,7 @@ DEFAULT_STOCK = ['VALE3', 'PETR3', 'ALPA3']
 
 DEFAULT_AGENT = 'random'
 DEFAULT_ACTIONS = 'all'
+DEFAULT_INSIDER = 'random'
 
 
 
@@ -38,11 +39,14 @@ def get_simulator():
     group.add_argument('-a', '--agent', dest='agent',
                         choices=['random'], default=DEFAULT_AGENT,
                         type=str, help='Select the type of the agent to run in the simulator')
-    group.add_argument('-act', '--actions', dest='actions',
+    group.add_argument('-A', '--actions', dest='actions',
                         choices=['all', 'nowait'], default=DEFAULT_ACTIONS,
                         type=str, help='Select the desired action vector')
     group.add_argument('-s', '--stock', dest='stock', default=DEFAULT_STOCK,
                         type=list, help='Select the stock to make transactions')
+    group.add_argument('-i', '--insider', dest='insider', default=DEFAULT_INSIDER,
+                        type=str, choices=['random'], help='Select the type of the insider')
+
 
     args = parser.parse_args()
 
@@ -54,7 +58,7 @@ def get_simulator():
 
 def register_agent(args):
     if args.agent == 'random':
-        return RandomAgent(args.actions, args.stock)
+        return RandomAgent(args.actions, args.stock, args.insider)
     else:
         raise ValueError("Agent must be 'random'.")
 
