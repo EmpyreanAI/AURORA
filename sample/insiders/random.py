@@ -9,7 +9,7 @@ class RandomInsider(BaseInsider):
         self._log("Stocks: {}".format(self.stock_wallet))
 
     def log_dir(self, dir):
-        self._log("({0}): {1}".format(self.stock, dir))
+        self._log("({0}): {1}".format(self.stock_name, dir))
 
     def predict_direction(self):
         dir_amount = len(self._directions)

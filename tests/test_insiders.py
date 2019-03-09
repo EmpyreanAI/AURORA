@@ -10,12 +10,12 @@ class TestBaseInsiders(unittest.TestCase):
     def test_init(self):
         """."""
         insider = sample.BaseInsider(0, 'VALE3', sample.DEFAULT_DIRS)
-        self.assertEqual(sample.DEFAULT_DIRS, ['up', 'down'])
+        self.assertEqual(sample.DEFAULT_DIRS, ('up', 'down'))
         self.assertEqual(insider._insider_id, 0)
-        self.assertEqual(insider._stock, 'VALE3')
+        self.assertEqual(insider._stock_name, 'VALE3')
         self.assertEqual(insider._stock_wallet, [])
         self.assertEqual(len(insider._stock_wallet), 0)
-        self.assertEqual(insider._directions, ['up', 'down'])
+        self.assertEqual(insider._directions, ('up', 'down'))
 
     def test_insider_id(self):
         """."""
@@ -26,7 +26,7 @@ class TestBaseInsiders(unittest.TestCase):
     def test_stock(self):
         """."""
         insider = sample.BaseInsider(0, 'VALE3', sample.DEFAULT_DIRS)
-        self.assertEqual(insider.stock, 'VALE3')
+        self.assertEqual(insider.stock_name, 'VALE3')
 
     def test_stock_wallet(self):
         """."""

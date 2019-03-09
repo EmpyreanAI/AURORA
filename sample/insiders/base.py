@@ -41,8 +41,13 @@ class BaseInsider():
 
     @property
     def insider_id(self):
-        """Get the insider stock name."""
+        """Get the insider id."""
         return self._insider_id
+
+    @property
+    def stock_name(self):
+        """Get the insider stock name."""
+        return self._stock_name
 
     @property
     def stock_wallet(self):
