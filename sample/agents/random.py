@@ -24,7 +24,7 @@ class RandomAgent(BaseAgent):
         selected_actions = []
         temp_cash = self.cash
         for insider, info in infos:
-            stock_name = insider.get_stock_name()
+            stock_name = insider.stock
             stock = crud._get_stock(day, stock_name)
             if stock != None:
                 stock_price = stock['PREULT']

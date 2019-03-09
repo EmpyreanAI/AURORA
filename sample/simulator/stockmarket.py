@@ -12,6 +12,7 @@ from .crud import CRUD
 from .plotter import Plotter
 from agents.random import RandomAgent
 
+
 class StockMarket(object):
 
     def __init__(self, agent, window_size, start_year, end_year):
@@ -21,7 +22,6 @@ class StockMarket(object):
         self.crud = CRUD()
         self.data = self._get_data(start_year, end_year)
         self.plotter = Plotter()
-
 
     def _get_data(self, start_year, end_year):
         data = self.crud._get_markets(start_year, end_year)

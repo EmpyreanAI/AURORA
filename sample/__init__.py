@@ -8,7 +8,8 @@
 
 from agents.base import BaseAgent
 from agents.random import RandomAgent
-from insiders.base import BaseInsider
+from insiders.base import BaseInsider, DEFAULT_DIRS
 from insiders.random import RandomInsider
+from simulator.stock import Stock
 
 __version__ = '0.0.0'

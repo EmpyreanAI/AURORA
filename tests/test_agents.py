@@ -1,3 +1,5 @@
+# pylint: skip-file
+
 """Test Agents Classes."""
 
 import unittest
@@ -26,12 +28,12 @@ class TestBaseAgent(unittest.TestCase):
         self.assertEqual(len(agent.insiders), 0)
         agent2 = sample.BaseAgent('all', ['VALE3'], 'random')
         self.assertEqual(len(agent2.insiders), 1)
-        self.assertEqual(agent2.insiders[0].id, 0)
+        self.assertEqual(agent2.insiders[0]._insider_id, 0)
         agent3 = sample.BaseAgent('all', ['VALE3', 'PETR3', 'ALPA3'], 'random')
         self.assertEqual(len(agent3.insiders), 3)
-        self.assertEqual(agent3.insiders[0].id, 0)
-        self.assertEqual(agent3.insiders[1].id, 1)
-        self.assertEqual(agent3.insiders[2].id, 2)
+        self.assertEqual(agent3.insiders[0].insider_id, 0)
+        self.assertEqual(agent3.insiders[1].insider_id, 1)
+        self.assertEqual(agent3.insiders[2].insider_id, 2)
 
     def test_cash(self):
         """Test basic agent cash related functions."""
@@ -68,7 +70,7 @@ class TestBaseAgent(unittest.TestCase):
         self.assertRaises(NotImplementedError, agent.act)
 
     def test_log(self):
-        """Test basic agent log functiom."""
+        """Test basic agent log function."""
         agent = sample.BaseAgent('all', [], 'random')
         self.assertRaises(NotImplementedError, agent._log)
 
