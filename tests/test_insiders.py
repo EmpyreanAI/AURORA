@@ -10,6 +10,7 @@ class TestBaseInsiders(unittest.TestCase):
     def test_init(self):
         """."""
         insider = sample.BaseInsider(0, 'VALE3', sample.DEFAULT_DIRS)
+        self.assertEqual(isinstance(insider, sample.BaseInsider), True)
         self.assertEqual(sample.DEFAULT_DIRS, ('up', 'down'))
         self.assertEqual(insider._insider_id, 0)
         self.assertEqual(insider._stock_name, 'VALE3')

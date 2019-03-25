@@ -7,37 +7,35 @@ OWOWOW
 """
 import math
 import numpy as np
+import pykka
 
 from .crud import CRUD
 from .plotter import Plotter
-from agents.random import RandomAgent
 
+class StockMarket(pykka.ThreadingActor):
 
-class StockMarket(object):
-
-    def __init__(self, agent, window_size, start_year, end_year):
+    def __init__(self, window_size, start_year, end_year):
+        super(StockMarket, self).__init__()
         self._log("Initialized")
         self.window_size = window_size
-        self.agent = agent
         self.crud = CRUD()
         self.data = self._get_data(start_year, end_year)
         self.plotter = Plotter()
 
     def _get_data(self, start_year, end_year):
-        data = self.crud._get_markets(start_year, end_year)
+        data = self.crud.get_markets(start_year, end_year)
         return data
 
-    def _execute_buy(self, insider, stock):
-        self.agent.cash_sub(stock['PREULT'])
-        insider.stock_wallet.append(stock)
+    def execute_buy(self, insider, stock):
+        # insider.stock_wallet.append(stock)
         self._log("Stock being bought at {0:.2f}".format(stock['PREULT']))
+        return stock
 
-    def _execute_sell(self, insider, stock):
-        bought_price = insider.stock_wallet.pop(0)
-        bought_price = bought_price['PREULT']
-        self.agent.profit_add(stock['PREULT'] - bought_price)
-        self.agent.cash_add(stock['PREULT'])
+    def execute_sell(self, stock):
+        # bought_price = insider.stock_wallet.pop(0)
+        # bought_price = bought_price['PREULT']
         self._log("Stock being sold at {0:.2f}".format(stock['PREULT']))
+        return stock['PREULT']
 
     def _get_state(self, time):
         window = time - self.window_size + 1
@@ -49,34 +47,41 @@ class StockMarket(object):
 
         return np.array([block[0:len(block)-1]])
 
-    def _format_price(n):
-        return ("-$" if n < 0 else "$") + "{0:.2f}".format(abs(n))
+    def on_receive(self, message):
+        return 'DAY_PASSED'
+
+    # def wait_for_actions(self):
+        # return bool(self.brokerage._end_actions)
 
     def run(self):
         self._log("Running")
-        self.agent.cash_add(1000.00)
-        self.agent.log_cash()
         bought = []
         sold = []
         for day in self.data:
-            # state = self._get_state(time)
-            agent_money = self.agent.cash
-            actions = self.agent.act(day['_id'], self.crud)
 
-            for insider, stock, action in actions:
-                if action == 'buy':
-                    self._execute_buy(insider, stock)
-                    bought.append((day['_id'], stock['PREULT']))
-                elif action == 'sell':
-                    self._execute_sell(insider, stock)
-                    sold.append((day['_id'], stock['PREULT']))
-            reward = math.log((self.agent.cash/agent_money), 10)
+            while self.wait_for_actions():
+                pass
+            # agent_money = self.agenst.cash
+            # actions = self.agent.act(day['_id'], self.crud)
 
-        self._log("Simulation Completed")
-        self._log("Simulation profit: {0:.2f}".format(self.agent.profit))
-        self.agent.log_cash()
+            # for insider, stock, action in actions:
+                # if action == 'buy':
+                    # self.execute_buy(insider, stock)
+                    # bought.append((day['_id'], stock['PREULT']))
+                # elif action == 'sell':
+                    # self.execute_sell(insider, stock)
+                    # sold.append((day['_id'], stock['PREULT']))
+
+
         # self.plotter.plot_one(self.data, bought, sold)
 
     @classmethod
     def _log(cls, msg):
         print("[StockMarket] {}".format(msg))
+
+if __name__ == '__main__':
+    try:
+        MARKET = StockMarket()
+        MARKET.RUN()
+    except KeyboardInterrupt:
+        print('\n\nInterrupted execution\n')

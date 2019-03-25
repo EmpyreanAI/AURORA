@@ -12,6 +12,7 @@ class TestBaseAgent(unittest.TestCase):
     def test_init(self):
         """Test basic agent initialization properties."""
         agent = sample.BaseAgent('all', [], 'random')
+        self.assertEqual(isinstance(agent, sample.BaseAgent), True)
         self.assertEqual(agent._cash, 0)
         self.assertEqual(agent._profit, 0)
 
@@ -96,10 +97,15 @@ class TestBaseAgent(unittest.TestCase):
         self.assertEqual(len(agent2.request_notifications()), 2)
 
 
-# class TestRandomAgent(unittest.TestCase):
-#
-#     def test_agent_init(self):
-#         pass
+class TestRandomAgent(unittest.TestCase):
+
+    def test_init(self):
+        agent = sample.RandomAgent('all', ['VALE3'], 'random')
+        self.assertEqual(isinstance(agent, sample.RandomAgent), True)
+
+    def test_log(self):
+        agent = sample.RandomAgent('all', ['VALE3'], 'random')
+        self.assertEqual()
 
 
 if __name__ == "__main__":

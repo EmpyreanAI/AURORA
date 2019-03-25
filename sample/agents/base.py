@@ -24,7 +24,7 @@ class BaseAgent():
 
     """
 
-    def __init__(self, actions, stocks, insider_type):
+    def __init__(self, agent_id, brokerage, actions, stocks, insider_type):
         """Initialize a Base Agent.
 
         Args:
@@ -34,8 +34,10 @@ class BaseAgent():
             insider_type: The type of the insiders. Can be 'random'.
 
         """
+        self._agent_id = agent_id
         self._cash = 0
         self._profit = 0
+        self._brokerage = brokerage
         self.actions = self._register_actions(actions)
         self.insiders = []
         insider_id = 0
@@ -43,6 +45,11 @@ class BaseAgent():
             self.insiders.append(self._register_insider(insider_id,
                                                         insider_type, stock))
             insider_id += 1
+
+    @property
+    def agent_id(self):
+        """Get or set the agent's id."""
+        return self._agent_id
 
     @property
     def cash(self):

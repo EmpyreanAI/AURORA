@@ -3,21 +3,12 @@ from agents.base import BaseAgent
 
 class RandomAgent(BaseAgent):
 
-    def __init__(self, actions, stocks, insider_type):
+    def __init__(self, agent_id, brokerage, actions, stocks, insider_type):
         self._log("Initialized")
-        super(RandomAgent, self).__init__(actions, stocks, insider_type)
+        super(RandomAgent, self).__init__(agent_id, brokerage, actions,
+                                          stocks, insider_type)
         self._log("Cash: {0:.2f}".format(self.cash))
         self._log("Profit: {0:.2f}".format(self.profit))
-
-    def log_cash(self):
-        self._log("Cash: {0:.2f}".format(self.cash))
-
-    def log_action(self, act):
-        act = act.capitalize()
-        act = act + "ing"
-        self._log(act)
-        # if act is 'sell' or 'buy':
-        #     self.log_cash()
 
     def act(self, day, crud):
         infos = self.request_notifications()
@@ -25,7 +16,7 @@ class RandomAgent(BaseAgent):
         temp_cash = self.cash
         for insider, info in infos:
             stock_name = insider.stock_name
-            stock = crud._get_stock(day, stock_name)
+            stock = crud.get_stock(day, stock_name)
             if stock is not None:
                 stock_price = stock['PREULT']
                 actions = self.actions[:]
@@ -47,3 +38,13 @@ class RandomAgent(BaseAgent):
     @classmethod
     def _log(cls, msg):
         print("[RandomAgent] {}".format(msg))
+
+    def log_cash(self):
+        self._log("Cash: {0:.2f}".format(self.cash))
+
+    def log_profit(self):
+        self._log("Profit: {0:.2f}".format(self.profit))
+
+    def log_action(self, act):
+        act = act.capitalize() + "ing"
+        self._log(act)
