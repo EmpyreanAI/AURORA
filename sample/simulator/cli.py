@@ -5,7 +5,7 @@ from .brokerage import Brokerage
 from agents.random import RandomAgent
 
 DEFAULT_WINDOW_SIZE = 10
-DEFAULT_START_YEAR = 2001
+DEFAULT_START_YEAR = 2004
 DEFAULT_END_YEAR = 2018
 DEFAULT_STOCK = ['VALE3', 'PETR3', 'ALPA3']
 
@@ -60,9 +60,9 @@ def get_simulator():
     market = register_market(args)
     brokerage = register_brokerage(market, args.fee)
     agent = register_agent("J.Bond", brokerage, args)
-    brokerage.proxy().register_agent(agent.agent_id)
+    brokerage.register_agent(agent)
 
-    return agent, market
+    return agent, brokerage
 
 
 def register_agent(agent_id, brokerage, args):
@@ -76,10 +76,10 @@ def register_agent(agent_id, brokerage, args):
 
 
 def register_brokerage(market, fee):
-    return Brokerage.start(market, fee)
+    return Brokerage(market, fee)
 
 
 def register_market(args):
-    return StockMarket.start(window_size=args.window,
-                             start_year=args.start_year,
-                             end_year=args.end_year)
+    return StockMarket(window_size=args.window,
+                       start_year=args.start_year,
+                       end_year=args.end_year)

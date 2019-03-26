@@ -1,39 +1,49 @@
+from .stock import Stock
 
-import pykka
-
-class Brokerage(pykka.ThreadingActor):
+class Brokerage():
 
     def __init__(self, market, fee):
-        super(Brokerage, self).__init__()
-        self._agents = []
+        self._agent = None
+        self.day = None
         self._fee = fee
         self.market = market
-        self._end_actions = False
+
 
     @property
-    def agents(self):
-        return self._agents
+    def agent(self):
+        return self._agent
 
-    @property
-    def end_actions(self):
-        return self._end_actions
+    def stock_info(self, stock):
+        return self.market.get_stock_info(self.day, stock)
 
-    @end_actions.setter
-    def end_actions(self):
-        self._end_actions = True
+    def stock_price(self, stock_name):
+        stock = self.stock_info(stock_name)
+        if stock is not None:
+            stock_price = stock['PREULT']
+        else:
+            stock_price = None
+        return stock_price
 
-    def register_agent(self, agent_name):
-        self._agents.append(agent_name)
+    def request_actions(self):
+        self.agent.act()
 
-    def request_buy(self, agent, stock, ammount):
-        bought_stock = self.market.execute_buy()
-        agent.cash_sub(stock['PREULT'])
+    def register_agent(self, agent):
+        self._agent = agent
+
+    def request_buy(self, agent, stock_name, ammount):
+        stock = self.stock_info(stock_name)
+        bought_stock = self.market.execute_buy(stock)
+        stock_price = self.stock_price(stock_name)
+        agent.cash_sub(stock_price)
+        return Stock(stock_name, stock_price, self.day)
         # da o stock comprado para o agent
 
-    def request_sell(self, agent, stock, ammount):
-        cash = self.market.execute_sell()
+    def request_sell(self, agent, stock_name, ammount):
+        stock = self.stock_info(stock_name)
+        cash = self.market.execute_sell(stock)
         agent.cash_add(cash - self._fee)
 
-    def please_pass_the_day(self):
-        response = self.market.ask({"msg": "PASS_DAY"})
-        print(response)
+    def run(self):
+        for day in self.market.run():
+            self.day = day['_id']
+            self.request_actions()

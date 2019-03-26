@@ -10,30 +10,37 @@ class RandomAgent(BaseAgent):
         self._log("Cash: {0:.2f}".format(self.cash))
         self._log("Profit: {0:.2f}".format(self.profit))
 
-    def act(self, day, crud):
+
+    def random_decider(self, stock_price, insider):
+        if stock_price is not None:
+            actions = self.actions[:]
+            if self.cash < stock_price:
+                actions.remove('buy')
+            if insider.wallet_size() == 0:
+                actions.remove('sell')
+            if len(actions) == 0:
+                actions.append('wait')
+            actions_size = len(actions)
+            index = random.randrange(actions_size)
+            action = actions[index]
+        else:
+            action = 'wait'
+
+        return action
+
+    def act(self):
         infos = self.request_notifications()
-        selected_actions = []
-        temp_cash = self.cash
-        for insider, info in infos:
+        for insider, _ in infos:
             stock_name = insider.stock_name
-            stock = crud.get_stock(day, stock_name)
-            if stock is not None:
-                stock_price = stock['PREULT']
-                actions = self.actions[:]
-                if temp_cash < stock_price:
-                    actions.remove('buy')
-                if insider.wallet_size() == 0:
-                    actions.remove('sell')
-                actions_size = len(actions)
-                index = random.randrange(actions_size)
-                action = actions[index]
-                if action == 'buy':
-                    temp_cash -= stock_price
-            else:
-                action = 'wait'
+            stock_price = self._brokerage.stock_price(stock_name)
+            action = self.random_decider(stock_price, insider)
             self.log_action("{}: {}".format(stock_name, action))
-            selected_actions.append((insider, stock, action))
-        return selected_actions
+            if action == 'buy':
+                new_stock = self._brokerage.request_buy(self, stock_name, 1)
+                insider.add_stock(new_stock)
+            elif action == 'sell':
+                self._brokerage.request_sell(self, stock_name, 1)
+                insider.remove_stock()
 
     @classmethod
     def _log(cls, msg):
@@ -43,7 +50,10 @@ class RandomAgent(BaseAgent):
         self._log("Cash: {0:.2f}".format(self.cash))
 
     def log_profit(self):
-        self._log("Profit: {0:.2f}".format(self.profit))
+        for insider in self.insiders:
+            stocks = len(insider.stock_wallet)
+            self.profit += stocks * self._brokerage.stock_price(insider.stock_name)
+        self._log("Profit: {0:.2f}".format(self.profit+self.cash-1000))
 
     def log_action(self, act):
         act = act.capitalize() + "ing"
