@@ -51,4 +51,5 @@ class StockMarket(object):
             yield day
 
     @classmethod
+    def _log(cls, msg):
         print("[StockMarket] {}".format(msg))
