@@ -198,3 +198,8 @@ class BaseAgent():
         else:
             raise ValueError("Insider must be 'random'.")
         return insider
+
+    @classmethod
+    def _request_action_price(self):
+        for insider in self.insiders:
+            price = self._brokerage.stock_price(insider.stock_name)

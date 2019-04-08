@@ -5,9 +5,7 @@ import pymongo
 class CRUD():
 
     def __init__(self):
-        self.client = pymongo.MongoClient('127.0.0.1', 27017,
-                                          username="Skalwalker",
-                                          password="reka09")
+        self.client = pymongo.MongoClient()
 
         self.db = self.client.StockMarket
 
