@@ -247,9 +247,7 @@ def create_market(path, stock_market):
             market.insert_one(new_market)
 
 def create_stocks_db():
-    client = pymongo.MongoClient('127.0.0.1', 27017,
-                                 username="Skalwalker",
-                                 password="reka09")
+    client = pymongo.MongoClient()
 
     stock_market = client.StockMarket
 

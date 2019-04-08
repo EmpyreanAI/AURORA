@@ -38,6 +38,7 @@ class BaseInsider():
         self._stock_name = stock_name
         self._stock_wallet = []
         self._directions = dirs
+        self._day_price = 0
 
     @property
     def insider_id(self):
@@ -53,6 +54,19 @@ class BaseInsider():
     def stock_wallet(self):
         """Get the insider stock wallet vector."""
         return self._stock_wallet
+
+    @property
+    def day_price(self):
+        """Get the insider stock wallet vector."""
+        return self._day_price
+    
+    @day_price.setter
+    def day_price(self, price):
+        """Get the insider stock wallet vector."""
+        if price is not None:
+            self._day_price = price
+        else:
+            raise ValueError("Price not found")
 
     def add_stock(self, stock):
         """Add a stock to the stock wallet.
